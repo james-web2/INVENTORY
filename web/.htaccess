@@ -1,0 +1,13 @@
+RewriteEngine on
+RewriteBase /inventory-system/web/
+
+# If a file or directory exists, serve it directly
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Otherwise, forward it to index.php
+RewriteRule . index.php
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . index.php
