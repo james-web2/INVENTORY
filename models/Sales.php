@@ -36,6 +36,9 @@ class Sales extends ActiveRecord
         ];
     }
 
+
+    
+
     public function getSaleItems()
     {
         return $this->hasMany(SaleItem::class, ['sale_id' => 'id']);

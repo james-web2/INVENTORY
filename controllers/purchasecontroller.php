@@ -1,10 +1,14 @@
 <?php
+
 namespace app\controllers;
 
 use Yii;
-use yii\web\Controller;
 use app\models\Purchase;
-use app\models\PurchaseSearch;
+use app\models\PurchaseSearch; // ✅ ADD THIS LINE
+use yii\web\Controller;
+use yii\data\ActiveDataProvider;
+use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
 
 class PurchaseController extends Controller
 {

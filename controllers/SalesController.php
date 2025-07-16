@@ -1,16 +1,16 @@
 <?php
-
 namespace app\controllers;
 
 use Yii;
 use app\models\Sales;
+use app\models\SalesSearch; // ✅ Add this line
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * SalesController handles CRUD for Sales.
+ * SalesController implements CRUD actions for Sales model.
  */
 class SalesController extends Controller
 {
@@ -18,7 +18,7 @@ class SalesController extends Controller
     {
         return [
             'verbs' => [
-                'class' => VerbFilter::class,
+                'class'   => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
@@ -26,20 +26,31 @@ class SalesController extends Controller
         ];
     }
 
-    // 🔹 List all sales
-    public function actionIndex()
-    {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Sales::find()->orderBy(['SaleDate' => SORT_DESC]),
-            'pagination' => ['pageSize' => 10],
-        ]);
+    /** 📄 List all sales + summary metric */
+   public function actionIndex()
+{
+    $searchModel = new SalesSearch();
+    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
-            'dataProvider' => $dataProvider,
-        ]);
-    }
+    // ✅ Calculate overview metrics
+    $totalSales   = Sales::find()->count();
+    $pendingSales = Sales::find()->where(['Status' => 'Pending'])->count();
+    $draftSales   = Sales::find()->where(['Status' => 'Draft'])->count();
+    $paidSales    = Sales::find()->where(['Status' => 'Paid'])->count();
+    $salesValue   = Sales::find()->sum('TotalAmount');
 
-    // 🔹 View a single sale
+    return $this->render('index', [
+        'searchModel'   => $searchModel,
+        'dataProvider'  => $dataProvider,
+        'totalSales'    => $totalSales,
+        'pendingSales'  => $pendingSales,
+        'draftSales'    => $draftSales,
+        'paidSales'     => $paidSales,
+        'salesValue'    => $salesValue,
+    ]);
+}
+
+    /** 🔍 View single sale */
     public function actionView($id)
     {
         return $this->render('view', [
@@ -47,7 +58,7 @@ class SalesController extends Controller
         ]);
     }
 
-    // 🔹 Create a new sale
+    /** ➕ Create */
     public function actionCreate()
     {
         $model = new Sales();
@@ -61,7 +72,7 @@ class SalesController extends Controller
         ]);
     }
 
-    // 🔹 Update an existing sale
+    /** ✏️ Update */
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
@@ -75,21 +86,19 @@ class SalesController extends Controller
         ]);
     }
 
-    // 🔹 Delete a sale
+    /** 🗑️ Delete */
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
         return $this->redirect(['index']);
     }
 
-    // 🔎 Find a single model by ID or throw 404
+    /** 🔐 Finder */
     protected function findModel($id)
     {
         if (($model = Sales::findOne($id)) !== null) {
             return $model;
         }
-
         throw new NotFoundHttpException('The requested sale does not exist.');
     }
 }

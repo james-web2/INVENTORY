@@ -77,7 +77,7 @@ $nearExpiry = Product::find()
                 <div class="col-md-4 mb-4 product-card">
                     <div class="card h-100 shadow-sm">
                         <?php if ($product->Image): ?>
-                            <img src="<?= Url::to('@web/' . $product->Image) ?>" class="card-img-top" alt="Product Image" style="height: 180px; object-fit: cover;">
+                            <img src="<?= Yii::getAlias('@web') . '/' . $product->Image ?>" class="card-img-top" alt="Product Image" style="height: 180px; object-fit: cover;">
                         <?php endif; ?>
                         <div class="card-body">
                             <h5 class="card-title"><?= Html::encode($product->ProductDescription) ?></h5>

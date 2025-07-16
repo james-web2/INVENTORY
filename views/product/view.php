@@ -9,6 +9,29 @@ use yii\widgets\DetailView;
 $this->title = 'View Product #' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Products', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+
+// Optional styling
+$this->registerCss(<<<CSS
+    .product-view {
+        background: #f9fafb;
+        padding: 30px;
+        border-radius: 12px;
+        max-width: 800px;
+        margin: auto;
+        font-family: 'Segoe UI', sans-serif;
+    }
+    .product-image {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .product-image img {
+        border: 2px solid #4ade80;
+        border-radius: 10px;
+        max-width: 300px;
+        height: auto;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+CSS);
 ?>
 
 <div class="product-view">
@@ -23,22 +46,22 @@ $this->params['breadcrumbs'][] = $this->title;
         ]) ?>
     </p>
 
+    <div class="product-image">
+        <?php if ($model->Image): ?>
+            <?= Html::img(Yii::getAlias('@web/' . $model->Image), ['alt' => 'Product Image']) ?>
+        <?php else: ?>
+            <p><em>No image uploaded</em></p>
+        <?php endif; ?>
+    </div>
+
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
             'id',
-            'ProductDescription',
+            'ProductName',
+            'ProductDescription:ntext',
             'CreatedDate',
             'ExpiryDate',
-            [
-                'label' => 'Product Image',
-                'format' => 'html',
-                'value' => function ($model) {
-                    return $model->Image
-                        ? Html::img(Yii::getAlias('@web/') . $model->Image, ['width' => '200'])
-                        : 'No image uploaded';
-                },
-            ],
         ],
     ]) ?>
 
